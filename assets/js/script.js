@@ -37,7 +37,6 @@ var createTaskActions = function(taskId) {
     editButtonEl.textContent = "Edit";
     editButtonEl.className = "btn edit-btn";
     editButtonEl.setAttribute("data-task-id", taskId);
-
     actionContainerEl.appendChild(editButtonEl);
 
     //create delete button
@@ -53,15 +52,14 @@ var createTaskActions = function(taskId) {
     statusSelectEl.className = "select-status";
     statusSelectEl.setAttribute("name", "status-change");
     statusSelectEl.setAttribute("data-task-id", taskId);
-
     actionContainerEl.appendChild(statusSelectEl);
 
     var statusChoices = ["To Do", "In Progress", "Completed"];
     for (var i = 0; i < statusChoices.length; i++) {
         // create option element
         var statusOptionEl = document.createElement("option");
-        statusOptionEl.textContent = statusChoices[i];
         statusOptionEl.setAttribute("value", statusChoices[i]);
+        statusOptionEl.textContent = statusChoices[i];
 
         //append to select
         statusSelectEl.appendChild(statusOptionEl);
@@ -96,12 +94,34 @@ var deleteTask = function(taskId) {
     taskSelected.remove();
 };
 
-var taskButtonHandler = function(event) {
-    console.log(event.target);
+var editTask = function(taskId) {
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
 
-    if (event.target.matches(".delete-btn")) {
+    //get content from task name and type
+    var taskName = taskSelected.querySelector("h3.task-name").textContent;
+
+    var taskType = taskSelected.querySelector("span.task-type").textContent;
+    document.querySelector("input[name='task-name']").value = taskName;
+    document.querySelector("select[name='task-type']").value = taskType;
+
+    document.querySelector("#save-task").textContent = "Save Task";
+    formEl.setAttribute("data-task-id", taskId);
+};
+
+var taskButtonHandler = function(event) {
+    // get target element from event
+    var targetEl = event.target;
+
+    //edit button was clicked
+    if (targetEl.matches(".edit-btn")) {
+        var taskId = targetEl.getAttribute("data-task-id");
+        editTask(taskId);
+    }
+
+    //delete button was clicked
+    else if (targetEl.matches(".delete-btn")) {
         //get th element's task id
-        var taskId = event.target.getAttribute("data-task-id");
+        var taskId = targetEl.getAttribute("data-task-id");
         deleteTask(taskId);
     }
 };
