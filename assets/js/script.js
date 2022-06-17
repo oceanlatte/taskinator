@@ -4,6 +4,8 @@ var pageContentEl = document.querySelector("#page-content");
 
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
+var tasksInProgressEl = document.querySelector("#tasks-in-progress");
+var tasksCompletedEl = document.querySelector("#tasks-completed");
 
 var taskFormHandler = function(event) {
     event.preventDefault();
@@ -148,8 +150,34 @@ var editTask = function(taskId) {
     formEl.setAttribute("data-task-id", taskId);
 };
 
+var taskStatusChangeHandler = function(event) {
+    console.log(event.target);
+
+    // get the task item's id
+    var taskId = event.target.getAttribute("data-task-id");
+
+    //get the currently selected options's value and convert to lwoercase
+    var statusValue = event.target.value.toLowerCase();
+
+    // find the parent task item element based on the id
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    if (statusValue === "to do") {
+        tasksToDoEl.appendChild(taskSelected);
+    }
+    else if (statusValue === "in progress") {
+        tasksInProgressEl.appendChild(taskSelected);
+    }
+    else if (statusValue === "completed") {
+        tasksCompletedEl.appendChild(taskSelected);
+    }
+};
+
 // for creating new tasks
 formEl.addEventListener("submit", taskFormHandler);
 
 // for edit and delete buttons
 pageContentEl.addEventListener("click", taskButtonHandler);
+
+// for status changes
+pageContentEl.addEventListener("change", taskStatusChangeHandler);
